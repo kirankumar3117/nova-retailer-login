@@ -9,6 +9,22 @@ const router = createRouter({
       name: 'signupPhone',
       component: () => import('@/views/SignUpPhoneView.vue')
     },
+    {
+      path: '/signup/mobile',
+      name: 'signupMobile',
+      component: () => import('@/views/SignUpMobileView.vue')
+    },
+    {
+      path: '/signup/mobile/otp',
+      name: 'signupMobileOtp',
+      component: () => import('@/views/SignUpMobileOtpView.vue')
+    },
+    {
+      path: '/signup/document',
+      name: 'signupDocument',
+      component: () => import('@/views/DocumentUploadPage.vue')
+    },
+
     // {
     //   path: '/about',
     //   name: 'about',

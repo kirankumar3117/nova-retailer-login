@@ -1,23 +1,20 @@
 <template >
     <div class="signUpViewContainer">
-        <OtpError v-if="otpError || success" :data="successOrErrorData" @otp-error-submitted="handleOtpErrorSubmit"/>
-        <div class="container" :id="otpError || success ? 'disable' : '' ">
+        <OtpError v-if="otpError" :data="successOrErrorData" @otp-error-submitted="handleOtpErrorSubmit"/>
+        <div class="container" :id="otpError ? 'disable' : '' ">
             <ProgressBar :phone="signUpPhone" :otp="otpPhone" :id="userId"/>
             <SignUpPhone @submited-mobile="handlePhoneSubmit" v-if="signUpPhone" :otpInputEmpty="otpInputEmpty"/>
-            <SignUpOtp v-if="otpPhone" @otp-submited="handleOtpSubmit" :otpInputEmpty="otpInputEmpty"/>
-            <DocumentUploadPage v-if="userId"/>
+            
         </div>
     </div>
 </template>
 <script>
 import OtpError from '../components/OtpError.vue';
 import ProgressBar from '../components/ProgressBar.vue';
-import SignUpOtp from '../components/SignUpOtp.vue';
 import SignUpPhone from '../components/SignUpPhone.vue';
-import DocumentUploadPage from '../components/DocumentUploadPage.vue';
-
+import router from '../router';
 export default {
-    components: { SignUpPhone, ProgressBar, SignUpOtp, OtpError, DocumentUploadPage },
+    components: { SignUpPhone, ProgressBar,  OtpError},
     props:{
       phone:String,
       str:String,
@@ -25,7 +22,7 @@ export default {
     },
     methods:{
         handlePhoneSubmit(phone){
-           
+        
             if(phone=='123456'){
                 this.userData.mobileNo=phone,
                  // this is for if the mobile no is correct
@@ -33,6 +30,7 @@ export default {
                 this.otpPhone=true; //progress bar shoes successfully moved to next component
                 console.log(phone)
                 console.log("Mobile Number Registered Successfully !")
+                router.push({path:'/signup/mobile/otp'})
             }
             else{
 
@@ -47,42 +45,10 @@ export default {
             }
  
         },
-        handleOtpSubmit(str){
-
-            if(str=='123456'){
-                this.userData.otp=str;
-                console.log(str)
-                console.log("OTP verification success full")
-                this.userId=true; //(progressbar) he can move to upload documents after success
-                this.success=true
-                this.successOrErrorData.success=true;
-                this.successOrErrorData.errorPropsMobile=false;
-                this.successOrErrorData.errorPropsOtp=false;
-            }
-            else{
-
-            //checking error start 
-            setTimeout(()=>{
-                this.otpError=true;
-                this.successOrErrorData.errorPropsMobile=false;
-                this.successOrErrorData.errorPropsOtp=true;
-                this.successOrErrorData.success=false;
-            },1000)
-            //checking error end
-
-            }
-   
-        },
         handleOtpErrorSubmit(otpErrorStatus){
-            if(otpErrorStatus==true){
-                this.otpPhone=false;
-                this.success=false;
-            }
-            else{
-
+           
                 console.log("otp error becomes false");
                 this.otpError=otpErrorStatus;
-                this.success=false;
                 this.otpInputEmpty=true;
                 setTimeout(()=>{
                     this.otpInputEmpty=false;
@@ -90,8 +56,9 @@ export default {
             }
             
             
-        }
-    },
+        },
+    
+    
     data(){
         return {
             // states for progress bar start
@@ -109,8 +76,7 @@ export default {
 
                 errorPropsMobile:false,
                 errorPropsOtp:false,
-                success:false,
-                
+                success:false
             },
             userData:new Object
         }
